@@ -30,10 +30,10 @@ pub struct Repo {
     // created_at: String,
     // updated_at: String,
     // homepage: Option<String>,
-    // size: u32,
-    // stars: u32,
+    size: f64,
+    stars: u64,
     // language: String,
-    // forks: u32,
+    forks: u64,
     // open_issues: u32,
     // closed_issues: u32,
     // open_pull_requests: u32,
@@ -53,10 +53,36 @@ impl Repo {
     pub fn new(user: &str, repo: &str) -> Result<Self> {
         let repo_data = repo_stats(user, repo)?;
         let name = repo_data["name"].as_str().ok_or(r#""name" is not a string"#)?.to_string();
+        let size = repo_data["size"].as_f64().ok_or(r#""size" cannot be read as f64"#)?;
+        let stars = repo_data["stargazers_count"].as_u64().ok_or(r#""stars" cannot be read as u64"#)?;
+        let forks = repo_data["forks"].as_u64().ok_or(r#""forks_count" cannot be read as u64"#)?;
         let repo = Repo {
             name,
+            size,
+            stars,
+            forks,
         };
         Ok(repo)
+    }
+
+    /// Gets the repository's name.
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// Gets the repository's raw size.
+    pub fn size(&self) -> f64 {
+        self.size
+    }
+
+    /// Gets the repository's star count.
+    pub fn stars(&self) -> u64 {
+        self.stars
+    }
+
+    /// Gets the repository's fork count.
+    pub fn forks(&self) -> u64 {
+        self.forks
     }
 }
 
