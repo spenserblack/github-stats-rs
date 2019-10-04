@@ -1,10 +1,17 @@
 [package]
-name = "template-rust-repo"
+name = "github-stats"
 version = "0.0.1"
-authors = ["First Last <user@email>"]
+authors = ["Spenser Black <spenserblack01@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Gets stats from Github"
+readme = "README.md"
+keywords = ["github"]
+repository = "https://github.com/spenserblack/github-stats-rs"
 
 [dependencies]
+
+[badges]
+is-it-maintained-issue-resolution = { repository = "spenserblack/github-stats-rs" }
+is-it-maintained-open-issues = { repository = "spenserblack/github-stats-rs" }
+maintenance = { status = "actively-developed" }
