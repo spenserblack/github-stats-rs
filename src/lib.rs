@@ -1,3 +1,5 @@
+use big_bytes::BigByte;
+
 // The URL for [Github] repository data.
 //
 // Append `/`*user*`/`*repo* to the end for the full URL.
@@ -73,6 +75,13 @@ impl Repo {
     /// Gets the repository's raw size.
     pub fn size(&self) -> f64 {
         self.size
+    }
+
+    /// Gets the repository's size in a human-readable format.
+    ///
+    /// `precision` is the number of decimal places to display.
+    pub fn human_size(&self, precision: usize) -> String {
+        self.size.big_byte(precision)
     }
 
     /// Gets the repository's star count.

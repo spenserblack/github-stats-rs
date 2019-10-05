@@ -11,6 +11,7 @@ repository = "https://github.com/spenserblack/github-stats-rs"
 publish = false
 
 [dependencies]
+big-bytes = "1"
 reqwest = "0.9"
 serde_json = "1.0"
 
