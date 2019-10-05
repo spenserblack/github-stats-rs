@@ -8,6 +8,7 @@ description = "Gets stats from Github"
 readme = "README.md"
 keywords = ["github"]
 repository = "https://github.com/spenserblack/github-stats-rs"
+publish = false
 
 [dependencies]
 reqwest = "0.9"
