@@ -81,7 +81,7 @@ impl Repo {
     ///
     /// `precision` is the number of decimal places to display.
     pub fn human_size(&self, precision: usize) -> String {
-        self.size.big_byte(precision)
+        (self.size * 1024_f64).big_byte(precision)
     }
 
     /// Gets the repository's star count.
