@@ -72,7 +72,7 @@ impl Repo {
         &self.name
     }
 
-    /// Gets the repository's raw size.
+    /// Gets the repository's size in kilobytes.
     pub fn size(&self) -> f64 {
         self.size
     }
