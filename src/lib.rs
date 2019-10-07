@@ -1,3 +1,20 @@
+//! Gets the stats of a [Github] repository.
+//!
+//! # Example
+//!
+//! ```
+//! use github_stats::Repo;
+//!
+//! let repo = Repo::new("rust-lang", "rust");
+//!
+//! match repo {
+//!     Ok(repo) => {/* Do some stuff */},
+//!     Err(e) => eprintln!(":("),
+//! }
+//! ```
+//!
+//! [Github]: https://github.com/
+
 use big_bytes::BigByte;
 
 use issues::issue_stats;
