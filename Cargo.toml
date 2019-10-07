@@ -1,6 +1,6 @@
 [package]
 name = "github-stats"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Spenser Black <spenserblack01@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -8,7 +8,6 @@ description = "Gets stats from Github"
 readme = "README.md"
 keywords = ["github"]
 repository = "https://github.com/spenserblack/github-stats-rs"
-publish = false
 
 [dependencies]
 big-bytes = "1"
