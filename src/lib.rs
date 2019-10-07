@@ -75,11 +75,21 @@ impl Repo {
     /// ```
     pub fn new(user: &str, repo: &str) -> Result<Self> {
         let repo_data = repo_stats(user, repo)?;
-        let name = repo_data["name"].as_str().ok_or(r#""name" is not a string"#)?.to_string();
-        let size = repo_data["size"].as_f64().ok_or(r#""size" cannot be read as f64"#)?;
-        let stars = repo_data["stargazers_count"].as_u64().ok_or(r#""stars" cannot be read as u64"#)?;
-        let forks = repo_data["forks"].as_u64().ok_or(r#""forks_count" cannot be read as u64"#)?;
-        let (open_issues, closed_issues, open_pull_requests, closed_pull_requests) = issue_stats(user, repo)?;
+        let name = repo_data["name"]
+            .as_str()
+            .ok_or(r#""name" is not a string"#)?
+            .to_string();
+        let size = repo_data["size"]
+            .as_f64()
+            .ok_or(r#""size" cannot be read as f64"#)?;
+        let stars = repo_data["stargazers_count"]
+            .as_u64()
+            .ok_or(r#""stars" cannot be read as u64"#)?;
+        let forks = repo_data["forks"]
+            .as_u64()
+            .ok_or(r#""forks_count" cannot be read as u64"#)?;
+        let (open_issues, closed_issues, open_pull_requests, closed_pull_requests) =
+            issue_stats(user, repo)?;
         let repo = Repo {
             name,
             size,
@@ -152,8 +162,7 @@ fn repo_api_url(user: &str, repo: &str) -> String {
 //
 // [Github]: https://github.com/
 fn repo_stats(user: &str, repo: &str) -> Result<Response> {
-    let response: Response = reqwest::get(&repo_api_url(user, repo))?
-        .json()?;
+    let response: Response = reqwest::get(&repo_api_url(user, repo))?.json()?;
     Ok(response)
 }
 

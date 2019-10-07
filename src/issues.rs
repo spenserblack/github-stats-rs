@@ -11,10 +11,23 @@ pub fn issue_stats(user: &str, repo: &str) -> Result<(u64, u64, u64, u64)> {
     let open_pull_requests_res: Response = reqwest::get(&open_pull_requests_url)?.json()?;
     let closed_pull_requests_res: Response = reqwest::get(&closed_pull_requests_url)?.json()?;
 
-    let open_issues = open_issues_res["total_count"].as_u64().ok_or("Cannot get open issue count")?;
-    let closed_issues = closed_issues_res["total_count"].as_u64().ok_or("Cannot get closed issue count")?;
-    let open_pull_requests = open_pull_requests_res["total_count"].as_u64().ok_or("Cannot get open pull request count")?;
-    let closed_pull_requests = closed_pull_requests_res["total_count"].as_u64().ok_or("Cannot get closed pull request count")?;
+    let open_issues = open_issues_res["total_count"]
+        .as_u64()
+        .ok_or("Cannot get open issue count")?;
+    let closed_issues = closed_issues_res["total_count"]
+        .as_u64()
+        .ok_or("Cannot get closed issue count")?;
+    let open_pull_requests = open_pull_requests_res["total_count"]
+        .as_u64()
+        .ok_or("Cannot get open pull request count")?;
+    let closed_pull_requests = closed_pull_requests_res["total_count"]
+        .as_u64()
+        .ok_or("Cannot get closed pull request count")?;
 
-    Ok((open_issues, closed_issues, open_pull_requests, closed_pull_requests))
+    Ok((
+        open_issues,
+        closed_issues,
+        open_pull_requests,
+        closed_pull_requests,
+    ))
 }
