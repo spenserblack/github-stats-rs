@@ -1,5 +1,9 @@
 use big_bytes::BigByte;
 
+use issues::issue_stats;
+
+mod issues;
+
 // The URL for [Github] repository data.
 //
 // Append `/`*user*`/`*repo* to the end for the full URL.
@@ -36,10 +40,10 @@ pub struct Repo {
     stars: u64,
     // language: String,
     forks: u64,
-    // open_issues: u32,
-    // closed_issues: u32,
-    // open_pull_requests: u32,
-    // closed_pull_requests: u32,
+    open_issues: u64,
+    closed_issues: u64,
+    open_pull_requests: u64,
+    closed_pull_requests: u64,
 }
 
 impl Repo {
@@ -58,11 +62,16 @@ impl Repo {
         let size = repo_data["size"].as_f64().ok_or(r#""size" cannot be read as f64"#)?;
         let stars = repo_data["stargazers_count"].as_u64().ok_or(r#""stars" cannot be read as u64"#)?;
         let forks = repo_data["forks"].as_u64().ok_or(r#""forks_count" cannot be read as u64"#)?;
+        let (open_issues, closed_issues, open_pull_requests, closed_pull_requests) = issue_stats(user, repo)?;
         let repo = Repo {
             name,
             size,
             stars,
             forks,
+            open_issues,
+            closed_issues,
+            open_pull_requests,
+            closed_pull_requests,
         };
         Ok(repo)
     }
@@ -92,6 +101,26 @@ impl Repo {
     /// Gets the repository's fork count.
     pub fn forks(&self) -> u64 {
         self.forks
+    }
+
+    /// Gets the repository's open issue count.
+    pub fn open_issues(&self) -> u64 {
+        self.open_issues
+    }
+
+    /// Gets the repository's closed issue count.
+    pub fn closed_issues(&self) -> u64 {
+        self.closed_issues
+    }
+
+    /// Gets the repository's open pull request count.
+    pub fn open_pull_requests(&self) -> u64 {
+        self.open_pull_requests
+    }
+
+    /// Gets the repository's closed pull request count.
+    pub fn closed_pull_requests(&self) -> u64 {
+        self.closed_pull_requests
     }
 }
 
