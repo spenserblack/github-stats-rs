@@ -15,11 +15,14 @@
 //!
 //! [Github]: https://github.com/
 
+use std::collections::HashMap;
+
 use big_bytes::BigByte;
 
 use issues::issue_stats;
 
 mod issues;
+pub mod languages;
 
 // The URL for [Github] repository data.
 //
@@ -37,6 +40,8 @@ const GITHUB_API_REPO_URL: &str = "https://api.github.com/repos";
 /// This crate's standard error type.
 pub type Error = Box<dyn std::error::Error>;
 
+type JsonMap<T> = HashMap<String, T>;
+
 // This crate's standard result type.
 type Response = serde_json::Value;
 
@@ -49,12 +54,13 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug)]
 pub struct Repo {
     name: String,
+    primary_language: String,
+    languages: JsonMap<u64>,
     // created_at: String,
     // updated_at: String,
     // homepage: Option<String>,
     size: f64,
     stars: u64,
-    // language: String,
     forks: u64,
     open_issues: u64,
     closed_issues: u64,
@@ -79,6 +85,15 @@ impl Repo {
             .as_str()
             .ok_or(r#""name" is not a string"#)?
             .to_string();
+        let primary_language = repo_data["language"]
+            .as_str()
+            .ok_or(r#""language" is not a string"#)?
+            .to_string();
+        let languages = languages::from_api_url(
+            repo_data["languages_url"]
+            .as_str()
+            .ok_or(r#""languages_url" is not a string"#)?
+        )?;
         let size = repo_data["size"]
             .as_f64()
             .ok_or(r#""size" cannot be read as f64"#)?;
@@ -95,6 +110,8 @@ impl Repo {
             .ok_or(r#""fork" could not be read as bool"#)?;
         let repo = Repo {
             name,
+            primary_language,
+            languages,
             size,
             stars,
             forks,
@@ -110,6 +127,18 @@ impl Repo {
     /// Gets the repository's name.
     pub fn name(&self) -> &str {
         &self.name
+    }
+
+    /// Repository's primary language.
+    pub fn primary_language(&self) -> &str {
+        &self.primary_language
+    }
+
+    /// All languages in this repository.
+    ///
+    /// Maps language name to number of bytes of code in that language.
+    pub fn languages(&self) -> &JsonMap<u64> {
+        &self.languages
     }
 
     /// Gets the repository's size in kilobytes.
