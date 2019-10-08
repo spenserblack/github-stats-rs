@@ -8,6 +8,9 @@ description = "Gets stats from Github"
 readme = "README.md"
 keywords = ["github"]
 repository = "https://github.com/spenserblack/github-stats-rs"
+exclude = [
+    "CHANGELOG.md",
+]
 
 [dependencies]
 big-bytes = "1"
