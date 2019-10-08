@@ -49,7 +49,6 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug)]
 pub struct Repo {
     name: String,
-    // is_fork: bool,
     // created_at: String,
     // updated_at: String,
     // homepage: Option<String>,
@@ -61,6 +60,7 @@ pub struct Repo {
     closed_issues: u64,
     open_pull_requests: u64,
     closed_pull_requests: u64,
+    is_fork: bool,
 }
 
 impl Repo {
@@ -90,6 +90,9 @@ impl Repo {
             .ok_or(r#""forks_count" cannot be read as u64"#)?;
         let (open_issues, closed_issues, open_pull_requests, closed_pull_requests) =
             issue_stats(user, repo)?;
+        let is_fork = repo_data["fork"]
+            .as_bool()
+            .ok_or(r#""fork" could not be read as bool"#)?;
         let repo = Repo {
             name,
             size,
@@ -99,6 +102,7 @@ impl Repo {
             closed_issues,
             open_pull_requests,
             closed_pull_requests,
+            is_fork,
         };
         Ok(repo)
     }
@@ -148,6 +152,11 @@ impl Repo {
     /// Gets the repository's closed pull request count.
     pub fn closed_pull_requests(&self) -> u64 {
         self.closed_pull_requests
+    }
+
+    /// If this repository is a fork.
+    pub fn is_fork(&self) -> bool {
+        self.is_fork
     }
 }
 
