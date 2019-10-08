@@ -58,7 +58,7 @@ pub struct Repo {
     languages: JsonMap<u64>,
     // created_at: String,
     // updated_at: String,
-    // homepage: Option<String>,
+    homepage: Option<String>,
     size: f64,
     stars: u64,
     forks: u64,
@@ -94,6 +94,11 @@ impl Repo {
             .as_str()
             .ok_or(r#""languages_url" is not a string"#)?
         )?;
+        let homepage = match repo_data["homepage"].as_str() {
+            None | Some("") => None,
+            Some(s) => Some(String::from(s)),
+
+        };
         let size = repo_data["size"]
             .as_f64()
             .ok_or(r#""size" cannot be read as f64"#)?;
@@ -112,6 +117,7 @@ impl Repo {
             name,
             primary_language,
             languages,
+            homepage,
             size,
             stars,
             forks,
@@ -139,6 +145,11 @@ impl Repo {
     /// Maps language name to number of bytes of code in that language.
     pub fn languages(&self) -> &JsonMap<u64> {
         &self.languages
+    }
+
+    /// The repository's homepage, if it exists.
+    pub fn homepage(&self) -> &Option<String> {
+        &self.homepage
     }
 
     /// Gets the repository's size in kilobytes.
