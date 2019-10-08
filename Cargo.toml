@@ -10,6 +10,7 @@ keywords = ["github"]
 repository = "https://github.com/spenserblack/github-stats-rs"
 exclude = [
     "CHANGELOG.md",
+    ".github/*",
 ]
 
 [dependencies]
