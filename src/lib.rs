@@ -56,10 +56,10 @@ pub type Result<T> = std::result::Result<T, Error>;
 #[derive(Debug)]
 pub struct Repo {
     name: String,
+    created: String,
+    updated: String,
     primary_language: String,
     languages: JsonMap<u64>,
-    // created_at: String,
-    // updated_at: String,
     homepage: Option<String>,
     size: f64,
     stars: u64,
@@ -85,6 +85,14 @@ impl Repo {
     pub fn new(user: &str, repo: &str) -> Result<Self> {
         let repo_data = repo_stats(user, repo)?;
         let name = repo_data["name"]
+            .as_str()
+            .ok_or(r#""name" is not a string"#)?
+            .to_string();
+        let created = repo_data["created_at"]
+            .as_str()
+            .ok_or(r#""name" is not a string"#)?
+            .to_string();
+        let updated = repo_data["updated_at"]
             .as_str()
             .ok_or(r#""name" is not a string"#)?
             .to_string();
@@ -120,6 +128,8 @@ impl Repo {
 
         let repo = Repo {
             name,
+            created,
+            updated,
             primary_language,
             languages,
             homepage,
@@ -139,6 +149,16 @@ impl Repo {
     /// Gets the repository's name.
     pub fn name(&self) -> &str {
         &self.name
+    }
+
+    /// Gets the repository's creation date.
+    pub fn created(&self) -> &str {
+        &self.created
+    }
+
+    /// Gets the date of the repository's latest updated.
+    pub fn updated(&self) -> &str {
+        &self.updated
     }
 
     /// Repository's primary language.
