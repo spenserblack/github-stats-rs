@@ -20,9 +20,11 @@ use std::collections::HashMap;
 use big_bytes::BigByte;
 
 use issues::issue_stats;
+use releases::Release;
 
 mod issues;
 pub mod languages;
+pub mod releases;
 
 // The URL for [Github] repository data.
 //
@@ -66,6 +68,7 @@ pub struct Repo {
     closed_issues: u64,
     open_pull_requests: u64,
     closed_pull_requests: u64,
+    latest_release: Option<Release>,
     is_fork: bool,
 }
 
@@ -113,6 +116,8 @@ impl Repo {
         let is_fork = repo_data["fork"]
             .as_bool()
             .ok_or(r#""fork" could not be read as bool"#)?;
+        let latest_release = Release::latest(user, repo)?;
+
         let repo = Repo {
             name,
             primary_language,
@@ -125,6 +130,7 @@ impl Repo {
             closed_issues,
             open_pull_requests,
             closed_pull_requests,
+            latest_release,
             is_fork,
         };
         Ok(repo)
@@ -192,6 +198,11 @@ impl Repo {
     /// Gets the repository's closed pull request count.
     pub fn closed_pull_requests(&self) -> u64 {
         self.closed_pull_requests
+    }
+
+    /// The latest release.
+    pub fn latest_release(&self) -> &Option<Release> {
+        &self.latest_release
     }
 
     /// If this repository is a fork.
