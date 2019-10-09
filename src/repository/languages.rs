@@ -1,3 +1,5 @@
+//! For getting stats on a repository's language(s).
+
 use std::collections::HashMap;
 
 use crate::{JsonMap, Result, Response};
@@ -20,6 +22,7 @@ pub fn from_api_url(url: &str) -> Result<JsonMap<u64>> {
     Ok(map)
 }
 
+/// Maps language names to number of bytes.
 pub fn from_user_repo(user: &str, repo: &str) -> Result<JsonMap<u64>> {
     let url = format!("https://api.github.com/repos/{0}/{1}/languages", user, repo);
 

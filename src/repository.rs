@@ -1,3 +1,5 @@
+//! For getting repository information.
+
 use big_bytes::BigByte;
 
 use crate::{JsonMap, Response, Result};
