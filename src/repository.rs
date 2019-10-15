@@ -25,13 +25,15 @@ pub struct Repo {
     /// In *kilo*bytes.
     pub size: u64,
     pub stargazers_count: u64,
-    pub watchers_count: u64,
     pub language: String,
     pub forks_count: u64,
     pub archived: bool,
     pub disabled: bool,
+    /// Issues + PRs
     pub open_issues: u64,
     pub default_branch: String,
+    /// Number of watchers.
+    pub subscribers_count: u64,
 }
 
 impl Repo {
