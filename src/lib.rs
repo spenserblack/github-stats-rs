@@ -15,9 +15,11 @@
 //!
 //! [Github]: https://github.com/
 
+pub use search::Query;
 pub use repository::Repo;
 pub use user::User;
 
+mod search;
 mod repository;
 mod user;
 
