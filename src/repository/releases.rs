@@ -1,6 +1,8 @@
 //! For getting release information.
 
-use crate::{Response, Result};
+use chrono::NaiveDateTime;
+
+use crate::{gh_datestr_to_chrono, Response, Result};
 
 /// Represents the stats of a [Github] release.
 ///
@@ -11,7 +13,7 @@ use crate::{Response, Result};
 pub struct Release {
     tag: String,
     name: String,
-    published: String,
+    published: NaiveDateTime,
 }
 
 impl Release {
@@ -29,7 +31,11 @@ impl Release {
 
         let tag = response["tag_name"].as_str().ok_or(r#""tag_name" is not a string"#)?.to_string();
         let name = response["name"].as_str().ok_or(r#""name" is not a string"#)?.to_string();
-        let published = response["published_at"].as_str().ok_or(r#""published_at" is not a string"#)?.to_string();
+        let published = gh_datestr_to_chrono(
+            response["published_at"]
+                .as_str()
+                .ok_or(r#""published_at" is not a string"#)?
+        )?;
 
         let release = Release {
             tag,
@@ -51,7 +57,7 @@ impl Release {
     }
 
     /// When the release was published.
-    pub fn published(&self) -> &str {
+    pub fn published(&self) -> &NaiveDateTime {
         &self.published
     }
 }

@@ -1,8 +1,9 @@
 //! For getting repository information.
 
 use big_bytes::BigByte;
+use chrono::NaiveDateTime;
 
-use crate::{JsonMap, Response, Result};
+use crate::{gh_datestr_to_chrono, JsonMap, Response, Result};
 
 use issues::issue_stats;
 pub use releases::Release;
@@ -30,8 +31,8 @@ const GITHUB_API_REPO_URL: &str = "https://api.github.com/repos";
 #[derive(Debug)]
 pub struct Repo {
     name: String,
-    created: String,
-    updated: String,
+    created: NaiveDateTime,
+    updated: NaiveDateTime,
     primary_language: String,
     languages: JsonMap<u64>,
     homepage: Option<String>,
@@ -62,14 +63,16 @@ impl Repo {
             .as_str()
             .ok_or(r#""name" is not a string"#)?
             .to_string();
-        let created = repo_data["created_at"]
-            .as_str()
-            .ok_or(r#""name" is not a string"#)?
-            .to_string();
-        let updated = repo_data["updated_at"]
-            .as_str()
-            .ok_or(r#""name" is not a string"#)?
-            .to_string();
+        let created = gh_datestr_to_chrono(
+            repo_data["created_at"]
+                .as_str()
+                .ok_or(r#""name" is not a string"#)?
+        )?;
+        let updated = gh_datestr_to_chrono(
+            repo_data["updated_at"]
+                .as_str()
+                .ok_or(r#""name" is not a string"#)?
+        )?;
         let primary_language = repo_data["language"]
             .as_str()
             .ok_or(r#""language" is not a string"#)?
@@ -126,12 +129,12 @@ impl Repo {
     }
 
     /// Gets the repository's creation date.
-    pub fn created(&self) -> &str {
+    pub fn created(&self) -> &NaiveDateTime {
         &self.created
     }
 
     /// Gets the date of the repository's latest updated.
-    pub fn updated(&self) -> &str {
+    pub fn updated(&self) -> &NaiveDateTime {
         &self.updated
     }
 
