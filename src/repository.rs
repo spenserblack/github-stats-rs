@@ -159,7 +159,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        println!("{:#?}", repo_stats("rust-lang", "rust").unwrap());
+        println!("{:#?}", Repo::new("rust-lang", "rust").unwrap());
         assert!(true);
     }
 }
