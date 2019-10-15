@@ -3,7 +3,7 @@
 use chrono::prelude::{DateTime, Utc};
 use serde::Deserialize;
 
-use crate::Result;
+use crate::{Result, User};
 
 /// Represents that stats of a [Github] repository.
 ///
@@ -15,6 +15,7 @@ pub struct Repo {
     pub name: String,
     pub full_name: String,
     pub private: bool,
+    pub owner: User,
     pub html_url: String,
     pub description: String,
     pub fork: bool,

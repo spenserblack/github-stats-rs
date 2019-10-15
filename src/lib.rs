@@ -16,8 +16,10 @@
 //! [Github]: https://github.com/
 
 pub use repository::Repo;
+pub use user::User;
 
 mod repository;
+mod user;
 
 /// This crate's standard error type.
 pub type Error = Box<dyn std::error::Error>;
