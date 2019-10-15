@@ -3,7 +3,7 @@
 use chrono::prelude::{DateTime, Utc};
 use serde::Deserialize;
 
-use crate::{gh_datestr_to_chrono, Response, Result};
+use crate::Result;
 
 /// Represents that stats of a [Github] repository.
 ///
