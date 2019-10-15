@@ -15,8 +15,6 @@
 //!
 //! [Github]: https://github.com/
 
-use std::collections::HashMap;
-
 use chrono::NaiveDateTime;
 
 pub use repository::Repo;
@@ -25,8 +23,6 @@ pub mod repository;
 
 /// This crate's standard error type.
 pub type Error = Box<dyn std::error::Error>;
-
-type JsonMap<T> = HashMap<String, T>;
 
 // This crate's standard result type.
 type Response = serde_json::Value;
