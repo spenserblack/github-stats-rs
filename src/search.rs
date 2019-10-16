@@ -48,6 +48,13 @@ pub struct SearchResults {
 }
 
 impl Search {
+    /// Creates a new search configuration.
+    ///
+    /// # Available Choices for `area`
+    /// - `"issues"`
+    /// *More choices will be made available as this project continues.*
+    /// *Other choices, such as `"users"`, are technically possible, but*
+    /// *are not yet properly supported.*
     pub fn new(area: &str, query: &Query) -> Self {
         Search {
             search_area: Some(String::from(area)),
@@ -88,6 +95,21 @@ impl Search {
     }
 }
 
+impl SearchResults {
+    /// Gets total count of values matching query.
+    ///
+    /// This ignores `per_page`. If you only want the total count, it is
+    /// recommended that you set `per_page` to `1` to shrink results size.
+    pub fn total_count(&self) -> u64 {
+        self.total_count
+    }
+
+    /// Items matching the query.
+    pub fn items(&self) -> &Vec<Value> {
+        &self.items
+    }
+}
+
 impl Default for Search {
     fn default() -> Self {
         Search {
@@ -114,10 +136,7 @@ impl fmt::Display for Search {
         write!(
             f,
             "https://api.github.com/search/{0}?per_page={1}&page={2}&q={3}",
-            search_area,
-            self.per_page,
-            self.page,
-            query,
+            search_area, self.per_page, self.page, query,
         )
     }
 }

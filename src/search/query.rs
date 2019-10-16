@@ -29,9 +29,7 @@ impl Query {
     ///
     /// Results in `repo:user/repo`.
     pub fn repo(mut self, user: &str, repo: &str) -> Self {
-        self.repo.push(
-            format!("{}/{}", user, repo)
-        );
+        self.repo.push(format!("{}/{}", user, repo));
         self
     }
 
@@ -57,33 +55,15 @@ impl Query {
 impl fmt::Display for Query {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let queries = {
-            let mut repo: Vec<String> = self.repo.iter()
-                .map(|s| {
-                    format!("repo:{}", s)
-                })
-                .collect();
-            let mut is: Vec<String> = self.is.iter()
-                .map(|s| {
-                    format!("is:{}", s)
-                })
-                .collect();
-            let mut r#type: Vec<String> = self.r#type.iter()
-                .map(|s| {
-                    format!("type:{}", s)
-                })
-                .collect();
-            let mut state: Vec<String> = self.state.iter()
-                .map(|s| {
-                    format!("state:{}", s)
-                })
-                .collect();
+            let mut repo: Vec<String> = self.repo.iter().map(|s| format!("repo:{}", s)).collect();
+            let mut is: Vec<String> = self.is.iter().map(|s| format!("is:{}", s)).collect();
+            let mut r#type: Vec<String> =
+                self.r#type.iter().map(|s| format!("type:{}", s)).collect();
+            let mut state: Vec<String> =
+                self.state.iter().map(|s| format!("state:{}", s)).collect();
 
-            let mut queries: Vec<String> = Vec::with_capacity(
-                repo.len()
-                + is.len()
-                + r#type.len()
-                + state.len()
-            );
+            let mut queries: Vec<String> =
+                Vec::with_capacity(repo.len() + is.len() + r#type.len() + state.len());
 
             queries.append(&mut repo);
             queries.append(&mut is);
