@@ -1,115 +1,123 @@
 use std::fmt;
 
-use crate::Repo;
+use serde::Deserialize;
+use serde_json::Value;
 
-#[derive(Default)]
-pub struct Query {
-    repo: Vec<String>,
-    is: Vec<String>,
-    r#type: Vec<String>,
-    state: Vec<String>,
+use crate::Result;
+
+pub use query::Query;
+
+mod query;
+
+/// Uses [Github]'s search API.
+///
+/// # Example
+/// ## Get merged PRs
+///
+/// ```
+/// use github_stats::{Query, Search};
+///
+/// let query = Query::new()
+///     .repo("rust-lang", "rust")
+///     .is("pr")
+///     .is("merged");
+///
+/// let results = Search::new("issues", &query)
+///     .per_page(10)
+///     .page(1)
+///     .search();
+///
+/// match results {
+///     Ok(results) => { /* do stuff */ }
+///     Err(e) => eprintln!(":("),
+/// }
+/// ```
+///
+/// [Github]: https://github.com/
+pub struct Search {
+    search_area: Option<String>,
+    query: Option<String>,
+    per_page: usize,
+    page: usize,
 }
 
-impl Query {
-    pub fn new() -> Self {
-        Query {
+#[derive(Debug, Deserialize)]
+pub struct SearchResults {
+    total_count: u64,
+    items: Vec<Value>,
+}
+
+impl Search {
+    pub fn new(area: &str, query: &Query) -> Self {
+        Search {
+            search_area: Some(String::from(area)),
+            query: Some(query.to_string()),
             ..Default::default()
         }
     }
 
-    pub fn from_repo(repo: Repo) -> Self {
-        let repo = vec![String::from(repo.full_name())];
-        Query {
-            repo,
-            ..Default::default()
-        }
-    }
-
-    /// *Adds* a repo to the query.
-    ///
-    /// Results in `repo:user/repo`.
-    pub fn repo(mut self, user: &str, repo: &str) -> Self {
-        self.repo.push(
-            format!("{}/{}", user, repo)
-        );
+    /// Defaults to 10.
+    pub fn per_page(mut self, per_page: usize) -> Self {
+        self.per_page = per_page;
         self
     }
 
-    /// *Adds* an `is` statement to the query.
-    ///
-    /// Results in `is:statement`.
-    pub fn is(mut self, statement: &str) -> Self {
-        self.is.push(String::from(statement));
+    /// Defaults to 1.
+    pub fn page(mut self, page: usize) -> Self {
+        self.page = page;
         self
     }
 
-    /// *Adds* a `type` statement to the query.
-    ///
-    /// Results in `type:statement`.
-    ///
-    /// *Use `r#type` to escape `type` keyword.
-    pub fn r#type(mut self, statement: &str) -> Self {
-        self.r#type.push(String::from(statement));
-        self
+    /// Moves one page forward.
+    pub fn next_page(&mut self) {
+        // TODO Check that page < MAX
+        self.page += 1;
+    }
+
+    /// Moves one page backward.
+    pub fn prev_page(&mut self) {
+        // TODO Check that page > MIN
+        self.page -= 1;
+    }
+
+    /// Runs the search.
+    pub fn search(&self) -> Result<SearchResults> {
+        // TODO Return error if search_area or query are None
+        let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
+        Ok(results)
     }
 }
 
-impl fmt::Display for Query {
+impl Default for Search {
+    fn default() -> Self {
+        Search {
+            search_area: None,
+            query: None,
+            per_page: 10,
+            page: 1,
+        }
+    }
+}
+
+impl fmt::Display for Search {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let queries = {
-            let mut repo: Vec<String> = self.repo.iter()
-                .map(|s| {
-                    format!("repo:{}", s)
-                })
-                .collect();
-            let mut is: Vec<String> = self.is.iter()
-                .map(|s| {
-                    format!("is:{}", s)
-                })
-                .collect();
-            let mut r#type: Vec<String> = self.r#type.iter()
-                .map(|s| {
-                    format!("type:{}", s)
-                })
-                .collect();
-            let mut state: Vec<String> = self.state.iter()
-                .map(|s| {
-                    format!("state:{}", s)
-                })
-                .collect();
-
-            let mut queries: Vec<String> = Vec::with_capacity(
-                repo.len()
-                + is.len()
-                + r#type.len()
-                + state.len()
-            );
-
-            queries.append(&mut repo);
-            queries.append(&mut is);
-            queries.append(&mut r#type);
-            queries.append(&mut state);
-            queries
+        let search_area: &str = if let Some(area) = &self.search_area {
+            area
+        } else {
+            ""
         };
-
-        let queries = queries.join("+");
-
-        write!(f, "q={}", queries)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn built_query() {
-        let query = Query::new()
-            .repo("rust-lang", "rust")
-            .r#type("pr")
-            .is("merged")
-            .to_string();
-
-        assert_eq!("q=repo:rust-lang/rust+is:merged+type:pr", query);
+        let query: &str = if let Some(query) = &self.query {
+            query
+        } else {
+            ""
+        };
+        write!(
+            f,
+            "https://api.github.com/search/{0}?per_page={1}&page={2}&q={3}",
+            search_area,
+            self.per_page,
+            self.page,
+            query,
+        )
     }
 }

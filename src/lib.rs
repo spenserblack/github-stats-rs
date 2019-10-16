@@ -15,7 +15,7 @@
 //!
 //! [Github]: https://github.com/
 
-pub use search::Query;
+pub use search::{Query, Search};
 pub use repository::Repo;
 pub use user::User;
 
