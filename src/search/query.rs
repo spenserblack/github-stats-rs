@@ -1,26 +1,6 @@
 use std::fmt;
-use std::collections::HashSet;
 
 use crate::Repo;
-
-#[derive(PartialEq, Eq, Hash)]
-pub enum Metadata {
-    Label,
-    Milestone,
-    Assignee,
-    Project,
-}
-
-impl fmt::Display for Metadata {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Metadata::Label => write!(f, "label"),
-            Metadata::Milestone => write!(f, "milestone"),
-            Metadata::Assignee => write!(f, "assignee"),
-            Metadata::Project => write!(f, "project"),
-        }
-    }
-}
 
 #[derive(Default)]
 pub struct Query {
@@ -29,7 +9,7 @@ pub struct Query {
     label: Vec<String>,
     r#type: Vec<String>,
     state: Vec<String>,
-    missing_meta: HashSet<Metadata>,
+    no: Vec<String>,
 }
 
 impl Query {
@@ -83,9 +63,9 @@ impl Query {
 
     /// *Adds* a `no` statement to the query.
     ///
-    /// Results in `no:metatype`.
-    pub fn missing_metadata(mut self, metatype : Metadata) -> Self {
-        self.missing_meta.insert(metatype);
+    /// Results in `no:statement`.
+    pub fn no(mut self, statement: &str) -> Self {
+        self.no.push(String::from(statement));
         self
     }
 }
@@ -100,19 +80,19 @@ impl fmt::Display for Query {
                 self.r#type.iter().map(|s| format!("type:{}", s)).collect();
             let mut state: Vec<String> =
                 self.state.iter().map(|s| format!("state:{}", s)).collect();
-            let mut missing_meta: Vec<String> =
-                self.missing_meta.iter().map(|s| format!("no:{}", s)).collect();
+            let mut no: Vec<String> =
+                self.no.iter().map(|s| format!("no:{}", s)).collect();
 
             let mut queries: Vec<String> =
                 Vec::with_capacity(repo.len() + is.len() + label.len() + r#type.len() + state.len()
-                    + missing_meta.len());
+                    + no.len());
 
             queries.append(&mut repo);
             queries.append(&mut is);
             queries.append(&mut label);
             queries.append(&mut r#type);
             queries.append(&mut state);
-            queries.append(&mut missing_meta);
+            queries.append(&mut no);
             queries
         };
 
@@ -133,7 +113,7 @@ mod tests {
             .r#type("pr")
             .is("merged")
             .label("hacktoberfest")
-            .missing_metadata(Metadata::Assignee)
+            .no("assignee")
             .to_string();
 
         assert_eq!("q=repo:rust-lang/rust+is:merged+label:hacktoberfest+type:pr+no:assignee", query);
