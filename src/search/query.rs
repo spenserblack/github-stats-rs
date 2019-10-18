@@ -10,6 +10,7 @@ pub struct Query {
     r#type: Vec<String>,
     state: Vec<String>,
     no: Vec<String>,
+    language: Vec<String>,
 }
 
 impl Query {
@@ -68,6 +69,14 @@ impl Query {
         self.no.push(String::from(statement));
         self
     }
+
+    /// *Adds* a `language` statement to the query.
+    ///
+    /// Results in `language:statement`.
+    pub fn language(mut self, statement: &str) -> Self {
+        self.language.push(String::from(statement));
+        self
+    }
 }
 
 impl fmt::Display for Query {
@@ -82,6 +91,8 @@ impl fmt::Display for Query {
                 self.state.iter().map(|s| format!("state:{}", s)).collect();
             let mut no: Vec<String> =
                 self.no.iter().map(|s| format!("no:{}", s)).collect();
+            let mut language: Vec<String> =
+                self.language.iter().map(|s| format!("language:{}", s)).collect();
 
             let mut queries: Vec<String> =
                 Vec::with_capacity(repo.len() + is.len() + label.len() + r#type.len() + state.len()
@@ -93,6 +104,7 @@ impl fmt::Display for Query {
             queries.append(&mut r#type);
             queries.append(&mut state);
             queries.append(&mut no);
+            queries.append(&mut language);
             queries
         };
 
@@ -114,8 +126,9 @@ mod tests {
             .is("merged")
             .label("hacktoberfest")
             .no("assignee")
+            .language("rust")
             .to_string();
 
-        assert_eq!("q=repo:rust-lang/rust+is:merged+label:hacktoberfest+type:pr+no:assignee", query);
+        assert_eq!("q=repo:rust-lang/rust+is:merged+label:hacktoberfest+type:pr+no:assignee+language:rust", query);
     }
 }
