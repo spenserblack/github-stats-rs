@@ -77,14 +77,16 @@ impl Search {
 
     /// Moves one page forward.
     pub fn next_page(&mut self) {
-        // TODO Check that page < MAX
-        self.page += 1;
+        if self.page < std::usize::MAX {
+            self.page += 1; 
+        }
     }
 
     /// Moves one page backward.
     pub fn prev_page(&mut self) {
-        // TODO Check that page > MIN
-        self.page -= 1;
+        if self.page > std::usize::MIN {
+            self.page -= 1;
+        }
     }
 
     /// Runs the search.
