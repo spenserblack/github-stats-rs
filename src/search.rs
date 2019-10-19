@@ -103,12 +103,12 @@ impl Search {
 
     /// Runs the search.
     pub fn search(&self) -> Result<SearchResults> {
-        // TODO Return error if search_area or query are None
-        if self.search_area == None || self.query == None {
-            return Err(Box::new(SearchError("Please provide search area and query".into())))
+        if let (Some(_), Some(_)) = (self.search_area.as_ref(), self.query.as_ref()) {
+            let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
+            Ok(results)
+        } else {
+            Err(Box::new(SearchError("Please provide search area and query by using Search::new()".into())))
         }
-        let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
-        Ok(results)
     }
 }
 
