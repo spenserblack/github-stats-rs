@@ -1,4 +1,5 @@
 use std::fmt;
+use std::error::Error;
 
 use serde::Deserialize;
 use serde_json::Value;
@@ -47,6 +48,17 @@ pub struct SearchResults {
     items: Vec<Value>,
 }
 
+#[derive(Debug)]
+pub struct SearchError(String);
+
+impl fmt::Display for SearchError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f,"{}",self.0)
+    }
+}
+
+impl Error for SearchError {}
+
 impl Search {
     /// Creates a new search configuration.
     ///
@@ -91,9 +103,12 @@ impl Search {
 
     /// Runs the search.
     pub fn search(&self) -> Result<SearchResults> {
-        // TODO Return error if search_area or query are None
-        let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
-        Ok(results)
+        if let (Some(_), Some(_)) = (self.search_area.as_ref(), self.query.as_ref()) {
+            let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
+            Ok(results)
+        } else {
+            Err(Box::new(SearchError("Please provide search area and query by using Search::new()".into())))
+        }
     }
 }
 
@@ -140,5 +155,16 @@ impl fmt::Display for Search {
             "https://api.github.com/search/{0}?per_page={1}&page={2}&q={3}",
             search_area, self.per_page, self.page, query,
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn err_on_none() {
+        let default_search = Search::default().search();
+        assert!(default_search.is_err(), "should be Err, due to missing search area and query")
     }
 }
