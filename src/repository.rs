@@ -19,9 +19,14 @@ pub struct Repo {
     html_url: String,
     description: String,
     fork: bool,
+    url: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
     pushed_at: DateTime<Utc>,
+    git_url: String,
+    ssh_url: String,
+    clone_url: String,
+    svn_url: String,
     homepage: String,
     /// In *kilo*bytes.
     size: u64,
@@ -35,6 +40,9 @@ pub struct Repo {
     default_branch: String,
     /// Number of watchers.
     subscribers_count: u64,
+    has_issues: bool,
+    has_wiki: bool,
+    open_issues_count: u64,
 }
 
 impl Repo {
@@ -89,6 +97,10 @@ impl Repo {
         self.fork
     }
 
+    pub fn url(&self) -> &str {
+        &self.url
+    }
+
     pub fn created_at(&self) -> &DateTime<Utc> {
         &self.created_at
     }
@@ -99,6 +111,22 @@ impl Repo {
 
     pub fn pushed_at(&self) -> &DateTime<Utc> {
         &self.pushed_at
+    }
+
+    pub fn git_url(&self) -> &str {
+        &self.git_url
+    }
+
+    pub fn ssh_url(&self) -> &str {
+        &self.ssh_url
+    }
+
+    pub fn clone_url(&self) -> &str {
+        &self.clone_url
+    }
+
+    pub fn svn_url(&self) -> &str {
+        &self.svn_url
     }
 
     pub fn homepage(&self) -> &str {
@@ -142,6 +170,18 @@ impl Repo {
     /// Number of watchers.
     pub fn subscribers_count(&self) -> u64 {
         self.subscribers_count
+    }
+
+    pub fn has_issues(&self) -> bool {
+        self.has_issues
+    }
+
+    pub fn has_wiki(&self) -> bool {
+        self.has_wiki
+    }
+
+    pub fn open_issues_count(&self) -> u64 {
+        self.open_issues_count
     }
 }
 
