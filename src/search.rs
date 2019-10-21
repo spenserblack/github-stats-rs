@@ -36,8 +36,8 @@ mod query;
 ///
 /// [Github]: https://github.com/
 pub struct Search {
-    search_area: Option<String>,
-    query: Option<String>,
+    search_area: String,
+    query: String,
     per_page: usize,
     page: usize,
 }
@@ -69,9 +69,10 @@ impl Search {
     /// *are not yet properly supported.*
     pub fn new(area: &str, query: &Query) -> Self {
         Search {
-            search_area: Some(String::from(area)),
-            query: Some(query.to_string()),
-            ..Default::default()
+            search_area: String::from(area),
+            query: query.to_string(),
+            per_page: 10,
+            page: 1,
         }
     }
 
@@ -103,12 +104,8 @@ impl Search {
 
     /// Runs the search.
     pub fn search(&self) -> Result<SearchResults> {
-        if let (Some(_), Some(_)) = (self.search_area.as_ref(), self.query.as_ref()) {
-            let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
-            Ok(results)
-        } else {
-            Err(Box::new(SearchError("Please provide search area and query by using Search::new()".into())))
-        }
+        let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
+        Ok(results)
     }
 }
 
@@ -127,44 +124,12 @@ impl SearchResults {
     }
 }
 
-impl Default for Search {
-    fn default() -> Self {
-        Search {
-            search_area: None,
-            query: None,
-            per_page: 10,
-            page: 1,
-        }
-    }
-}
-
 impl fmt::Display for Search {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let search_area: &str = if let Some(area) = &self.search_area {
-            area
-        } else {
-            ""
-        };
-        let query: &str = if let Some(query) = &self.query {
-            query
-        } else {
-            ""
-        };
         write!(
             f,
             "https://api.github.com/search/{0}?per_page={1}&page={2}&q={3}",
-            search_area, self.per_page, self.page, query,
+            self.search_area, self.per_page, self.page, self.query,
         )
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn err_on_none() {
-        let default_search = Search::default().search();
-        assert!(default_search.is_err(), "should be Err, due to missing search area and query")
     }
 }
