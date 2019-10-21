@@ -192,14 +192,3 @@ fn repo_api_url(user: &str, repo: &str) -> String {
     const URL: &str = "https://api.github.com/repos";
     format!("{}/{}/{}", URL, user, repo)
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        println!("{:#?}", Repo::new("rust-lang", "rust").unwrap());
-        assert!(true);
-    }
-}
