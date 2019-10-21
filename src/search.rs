@@ -91,7 +91,7 @@ impl Search {
     /// Moves one page forward.
     pub fn next_page(&mut self) {
         if self.page < std::usize::MAX {
-            self.page += 1; 
+            self.page += 1;
         }
     }
 
