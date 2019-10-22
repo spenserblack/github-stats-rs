@@ -35,6 +35,9 @@ pub struct Repo {
     forks_count: u64,
     archived: bool,
     disabled: bool,
+    has_projects: bool,
+    has_pages: bool,
+    has_downloads: bool,
     /// Issues + PRs
     open_issues: u64,
     default_branch: String,
@@ -156,6 +159,18 @@ impl Repo {
 
     pub fn disabled(&self) -> bool {
         self.disabled
+    }
+
+    pub fn has_projects(&self) -> bool {
+        self.has_projects
+    }
+
+    pub fn has_pages(&self) -> bool {
+        self.has_pages
+    }
+
+    pub fn has_downloads(&self) -> bool {
+        self.has_downloads
     }
 
     /// Issues + PRs
