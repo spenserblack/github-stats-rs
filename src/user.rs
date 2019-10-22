@@ -2,6 +2,8 @@
 
 use serde::Deserialize;
 
+use crate::Result;
+
 /// Represents that stats of a [Github] user.
 ///
 /// [Github]: https://github.com/
@@ -17,6 +19,22 @@ pub struct User {
 }
 
 impl User {
+    /// Creates a new `User`
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use github_stats::User;
+    ///
+    /// let user = User::new("rust-lang");
+    /// ```
+    pub fn new(user: &str) -> Result<Self> {
+        const URL: &str = "https://api.github.com/users";
+        let url = format!("{}/{}", URL, user);
+        let user: User = reqwest::get(&url)?.json()?;
+
+        Ok(user)
+    }
     pub fn login(&self) -> &str {
         &self.login
     }
