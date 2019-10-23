@@ -76,6 +76,11 @@ impl Search {
         }
     }
 
+    /// Gets the query that will be used for the search.
+    pub fn get_query(&self) -> &str {
+        &self.query
+    }
+
     /// Defaults to 10.
     pub fn per_page(mut self, per_page: usize) -> Self {
         self.per_page = per_page;
