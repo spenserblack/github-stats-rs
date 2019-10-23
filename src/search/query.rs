@@ -121,7 +121,7 @@ impl fmt::Display for Query {
 
         let queries = queries.join("+");
 
-        write!(f, "q={}", queries)
+        write!(f, "{}", queries)
     }
 }
 
@@ -150,7 +150,7 @@ mod tests {
             .to_string();
 
         assert_eq!(
-            "q=repo:rust-lang/rust+is:merged+[BUG] in:name+label:hacktoberfest+type:pr+no:assignee+language:rust",
+            "repo:rust-lang/rust+is:merged+[BUG] in:name+label:hacktoberfest+type:pr+no:assignee+language:rust",
             query
         );
     }

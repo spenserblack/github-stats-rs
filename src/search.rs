@@ -138,3 +138,20 @@ impl fmt::Display for Search {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn built_search() {
+        const EXPECTED: &str = "https://api.github.com/search/issues?per_page=1&page=1&q=repo:rust-lang/rust+is:pr+is:merged";
+        let search = Search::new(
+            "issues",
+            &Query::new().repo("rust-lang", "rust").is("pr").is("merged"),
+        )
+        .per_page(1);
+
+        assert_eq!(EXPECTED, search.to_string());
+    }
+}
