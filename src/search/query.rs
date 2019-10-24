@@ -7,6 +7,7 @@ pub struct Query {
     repo: Vec<String>,
     is: Vec<String>,
     r#in: Vec<In>,
+    user: Vec<String>,
     label: Vec<String>,
     r#type: Vec<String>,
     state: Vec<String>,
@@ -53,6 +54,14 @@ impl Query {
         self
     }
 
+    /// *Adds* an `user` statement to the query.
+    ///
+    /// Results in `user:statement`.
+    pub fn user(mut self, statement: &str) -> Self {
+        self.user.push(String::from(statement));
+        self
+    }
+
     /// *Adds* a `label` statement to the query.
     ///
     /// Results in `label:statement`.
@@ -94,6 +103,7 @@ impl fmt::Display for Query {
             let mut repo: Vec<String> = self.repo.iter().map(|s| format!("repo:{}", s)).collect();
             let mut is: Vec<String> = self.is.iter().map(|s| format!("is:{}", s)).collect();
             let mut r#in: Vec<String> = self.r#in.iter().map(|s| s.to_string()).collect();
+            let mut user: Vec<String> = self.user.iter().map(|s| format!("user:{}", s)).collect();
             let mut label: Vec<String> = self.label.iter().map(|s| format!("label:{}", s)).collect();
             let mut r#type: Vec<String> =
                 self.r#type.iter().map(|s| format!("type:{}", s)).collect();
@@ -105,12 +115,13 @@ impl fmt::Display for Query {
                 self.language.iter().map(|s| format!("language:{}", s)).collect();
 
             let mut queries: Vec<String> =
-                Vec::with_capacity(repo.len() + is.len() + label.len() + r#type.len() + state.len()
-                    + no.len());
+                Vec::with_capacity(repo.len() + is.len() + r#in.len() + user.len() + label.len() + r#type.len() + state.len()
+                    + no.len() + language.len());
 
             queries.append(&mut repo);
             queries.append(&mut is);
             queries.append(&mut r#in);
+            queries.append(&mut user);
             queries.append(&mut label);
             queries.append(&mut r#type);
             queries.append(&mut state);
@@ -146,11 +157,12 @@ mod tests {
             .label("hacktoberfest")
             .no("assignee")
             .r#in("[BUG]", "name")
+            .user("spenserblack")
             .language("rust")
             .to_string();
 
         assert_eq!(
-            "repo:rust-lang/rust+is:merged+[BUG] in:name+label:hacktoberfest+type:pr+no:assignee+language:rust",
+            "repo:rust-lang/rust+is:merged+[BUG] in:name+user:spenserblack+label:hacktoberfest+type:pr+no:assignee+language:rust",
             query
         );
     }
