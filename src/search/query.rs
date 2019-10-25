@@ -8,6 +8,7 @@ pub struct Query {
     is: Vec<String>,
     r#in: Vec<In>,
     user: Vec<String>,
+    org: Vec<String>,
     label: Vec<String>,
     r#type: Vec<String>,
     state: Vec<String>,
@@ -62,6 +63,14 @@ impl Query {
         self
     }
 
+    /// *Adds* an `org` statement to the query.
+    ///
+    /// Results in `org:statement`.
+    pub fn org(mut self, statement: &str) -> Self {
+        self.org.push(String::from(statement));
+        self
+    }
+
     /// *Adds* a `label` statement to the query.
     ///
     /// Results in `label:statement`.
@@ -104,6 +113,7 @@ impl fmt::Display for Query {
             let mut is: Vec<String> = self.is.iter().map(|s| format!("is:{}", s)).collect();
             let mut r#in: Vec<String> = self.r#in.iter().map(|s| s.to_string()).collect();
             let mut user: Vec<String> = self.user.iter().map(|s| format!("user:{}", s)).collect();
+            let mut org: Vec<String> = self.org.iter().map(|s| format!("org:{}", s)).collect();
             let mut label: Vec<String> = self.label.iter().map(|s| format!("label:{}", s)).collect();
             let mut r#type: Vec<String> =
                 self.r#type.iter().map(|s| format!("type:{}", s)).collect();
@@ -115,13 +125,24 @@ impl fmt::Display for Query {
                 self.language.iter().map(|s| format!("language:{}", s)).collect();
 
             let mut queries: Vec<String> =
-                Vec::with_capacity(repo.len() + is.len() + r#in.len() + user.len() + label.len() + r#type.len() + state.len()
-                    + no.len() + language.len());
+                Vec::with_capacity(
+                    repo.len()
+                    + is.len()
+                    + r#in.len()
+                    + user.len()
+                    + org.len()
+                    + label.len()
+                    + r#type.len()
+                    + state.len()
+                    + no.len()
+                    + language.len()
+                );
 
             queries.append(&mut repo);
             queries.append(&mut is);
             queries.append(&mut r#in);
             queries.append(&mut user);
+            queries.append(&mut org);
             queries.append(&mut label);
             queries.append(&mut r#type);
             queries.append(&mut state);
@@ -163,6 +184,18 @@ mod tests {
 
         assert_eq!(
             "repo:rust-lang/rust+is:merged+[BUG] in:name+user:spenserblack+label:hacktoberfest+type:pr+no:assignee+language:rust",
+            query
+        );
+    }
+
+    #[test]
+    fn org_query() {
+        let query = Query::new()
+            .org("rust-lang")
+            .to_string();
+
+        assert_eq!(
+            "org:rust-lang",
             query
         );
     }
