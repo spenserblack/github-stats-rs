@@ -11,6 +11,7 @@ pub struct Query {
     assignee: Vec<String>,
     user: Vec<String>,
     org: Vec<String>,
+    fullname: Vec<FullName>,
     label: Vec<String>,
     r#type: Vec<String>,
     state: Vec<String>,
@@ -89,6 +90,14 @@ impl Query {
         self
     }
 
+    /// *Adds* a `fullname` statement to the query.
+    ///
+    /// Results in `fullname:first_name last_name`.
+    pub fn fullname(mut self, first_name: &str, last_name: &str) -> Self {
+        self.fullname.push(FullName::new(first_name, last_name));
+        self
+    }
+
     /// *Adds* a `label` statement to the query.
     ///
     /// Results in `label:statement`.
@@ -134,6 +143,7 @@ impl fmt::Display for Query {
             let mut user: Vec<String> = self.user.iter().map(|s| format!("user:{}", s)).collect();
             let mut assignee: Vec<String> = self.assignee.iter().map(|s| format!("assignee:{}", s)).collect();
             let mut org: Vec<String> = self.org.iter().map(|s| format!("org:{}", s)).collect();
+            let mut fullname: Vec<String> = self.fullname.iter().map(|s| s.to_string()).collect();
             let mut label: Vec<String> = self.label.iter().map(|s| format!("label:{}", s)).collect();
             let mut r#type: Vec<String> =
                 self.r#type.iter().map(|s| format!("type:{}", s)).collect();
@@ -153,6 +163,7 @@ impl fmt::Display for Query {
                     + assignee.len()
                     + user.len()
                     + org.len()
+                    + fullname.len()
                     + label.len()
                     + r#type.len()
                     + state.len()
@@ -167,6 +178,7 @@ impl fmt::Display for Query {
             queries.append(&mut assignee);
             queries.append(&mut user);
             queries.append(&mut org);
+            queries.append(&mut fullname);
             queries.append(&mut label);
             queries.append(&mut r#type);
             queries.append(&mut state);
@@ -186,6 +198,20 @@ struct In(String, String);
 impl fmt::Display for In {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} in:{}", self.0, self.1)
+    }
+}
+
+struct FullName(String, String);
+
+impl FullName {
+    fn new(first_name: &str, last_name: &str) -> Self {
+        FullName(String::from(first_name), String::from(last_name))
+    }
+}
+
+impl fmt::Display for FullName {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "fullname:{} {}", self.0, self.1)
     }
 }
 
@@ -234,5 +260,15 @@ mod tests {
         );
 
         assert_eq!("Users in:title", r#in.to_string());
+    }
+
+    #[test]
+    fn fullname_string() {
+        let fullname = FullName::new(
+            "Octo",
+            "Cat",
+        );
+
+        assert_eq!("fullname:Octo Cat", fullname.to_string());
     }
 }
