@@ -4,6 +4,7 @@ use crate::Repo;
 
 #[derive(Default)]
 pub struct Query {
+    author: Vec<String>,
     repo: Vec<String>,
     is: Vec<String>,
     r#in: Vec<In>,
@@ -30,6 +31,14 @@ impl Query {
             repo,
             ..Default::default()
         }
+    }
+
+    /// *Adds* an author to the query.
+    ///
+    /// Result is `author:username`.
+    pub fn author(mut self, username: &str) -> Self {
+        self.author.push(username.to_owned());
+        self
     }
 
     /// *Adds* a repo to the query.
@@ -118,6 +127,7 @@ impl Query {
 impl fmt::Display for Query {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let queries = {
+            let mut author: Vec<_> = self.author.iter().map(|s| format!("author:{}", s)).collect();
             let mut repo: Vec<String> = self.repo.iter().map(|s| format!("repo:{}", s)).collect();
             let mut is: Vec<String> = self.is.iter().map(|s| format!("is:{}", s)).collect();
             let mut r#in: Vec<String> = self.r#in.iter().map(|s| s.to_string()).collect();
@@ -136,7 +146,8 @@ impl fmt::Display for Query {
 
             let mut queries: Vec<String> =
                 Vec::with_capacity(
-                    repo.len()
+                author.len()
+                    + repo.len()
                     + is.len()
                     + r#in.len()
                     + assignee.len()
@@ -152,6 +163,7 @@ impl fmt::Display for Query {
             queries.append(&mut repo);
             queries.append(&mut is);
             queries.append(&mut r#in);
+            queries.append(&mut author);
             queries.append(&mut assignee);
             queries.append(&mut user);
             queries.append(&mut org);
@@ -192,11 +204,12 @@ mod tests {
             .r#in("[BUG]", "name")
             .assignee("spenserblack")
             .user("spenserblack")
+            .author("spenserblack")
             .language("rust")
             .to_string();
 
         assert_eq!(
-            "repo:rust-lang/rust+is:merged+[BUG] in:name+assignee:spenserblack+user:spenserblack+label:hacktoberfest+type:pr+no:assignee+language:rust",
+            "repo:rust-lang/rust+is:merged+[BUG] in:name+author:spenserblack+assignee:spenserblack+user:spenserblack+label:hacktoberfest+type:pr+no:assignee+language:rust",
             query
         );
     }
