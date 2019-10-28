@@ -21,8 +21,7 @@
 //! use github_stats::{Query, Search};
 //!
 //! // Gets latest merged PR
-//! let search = Search::new(
-//!     "issues",
+//! let search = Search::issues(
 //!     &Query::new().repo("rust-lang", "rust").is("pr").is("merged"),
 //! )
 //! .per_page(1)

@@ -23,7 +23,7 @@ mod query;
 ///     .is("pr")
 ///     .is("merged");
 ///
-/// let results = Search::new("issues", &query)
+/// let results = Search::issues(&query)
 ///     .per_page(10)
 ///     .page(1)
 ///     .search();
@@ -36,10 +36,25 @@ mod query;
 ///
 /// [Github]: https://github.com/
 pub struct Search {
-    search_area: String,
+    search_area: SearchArea,
     query: String,
     per_page: usize,
     page: usize,
+}
+
+enum SearchArea {
+    Issues,
+    Users,
+}
+
+impl fmt::Display for SearchArea {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use SearchArea::*;
+        write!(f, "{}", match self {
+            Issues => "issues",
+            Users => "users",
+        })
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -60,20 +75,21 @@ impl fmt::Display for SearchError {
 impl Error for SearchError {}
 
 impl Search {
-    /// Creates a new search configuration.
-    ///
-    /// # Available Choices for `area`
-    /// - `"issues"`
-    /// *More choices will be made available as this project continues.*
-    /// *Other choices, such as `"users"`, are technically possible, but*
-    /// *are not yet properly supported.*
-    pub fn new(area: &str, query: &Query) -> Self {
+    fn new(search_area: SearchArea, query: &Query) -> Self {
         Search {
-            search_area: String::from(area),
+            search_area,
             query: query.to_string(),
             per_page: 10,
             page: 1,
         }
+    }
+
+    pub fn issues(query: &Query) -> Self {
+        Search::new(SearchArea::Issues, query)
+    }
+
+    pub fn users(query: &Query) -> Self {
+        Search::new(SearchArea::Users, query)
     }
 
     /// Gets the query that will be used for the search.
@@ -131,10 +147,14 @@ impl SearchResults {
 
 impl fmt::Display for Search {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let search_area = match self.search_area {
+            SearchArea::Issues => "issues",
+            SearchArea::Users => "users",
+        };
         write!(
             f,
             "https://api.github.com/search/{0}?per_page={1}&page={2}&q={3}",
-            self.search_area, self.per_page, self.page, self.query,
+            search_area, self.per_page, self.page, self.query,
         )
     }
 }
@@ -146,8 +166,7 @@ mod tests {
     #[test]
     fn built_search() {
         const EXPECTED: &str = "https://api.github.com/search/issues?per_page=1&page=1&q=repo:rust-lang/rust+is:pr+is:merged";
-        let search = Search::new(
-            "issues",
+        let search = Search::issues(
             &Query::new().repo("rust-lang", "rust").is("pr").is("merged"),
         )
         .per_page(1);
