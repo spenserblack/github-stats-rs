@@ -8,6 +8,7 @@ pub struct Query {
     repo: Vec<String>,
     is: Vec<String>,
     r#in: Vec<In>,
+    assignee: Vec<String>,
     user: Vec<String>,
     org: Vec<String>,
     label: Vec<String>,
@@ -61,6 +62,14 @@ impl Query {
     /// Results in `keyword in:field`.
     pub fn r#in(mut self, keyword: &str, field: &str) -> Self {
         self.r#in.push(In(String::from(keyword), String::from(field)));
+        self
+    }
+
+    /// *Adds* an `assignee` statement to the query.
+    ///
+    /// Results in `assignee:username`.
+    pub fn assignee(mut self, username: &str) -> Self {
+        self.assignee.push(username.to_owned());
         self
     }
 
@@ -123,6 +132,7 @@ impl fmt::Display for Query {
             let mut is: Vec<String> = self.is.iter().map(|s| format!("is:{}", s)).collect();
             let mut r#in: Vec<String> = self.r#in.iter().map(|s| s.to_string()).collect();
             let mut user: Vec<String> = self.user.iter().map(|s| format!("user:{}", s)).collect();
+            let mut assignee: Vec<String> = self.assignee.iter().map(|s| format!("assignee:{}", s)).collect();
             let mut org: Vec<String> = self.org.iter().map(|s| format!("org:{}", s)).collect();
             let mut label: Vec<String> = self.label.iter().map(|s| format!("label:{}", s)).collect();
             let mut r#type: Vec<String> =
@@ -140,6 +150,7 @@ impl fmt::Display for Query {
                     + repo.len()
                     + is.len()
                     + r#in.len()
+                    + assignee.len()
                     + user.len()
                     + org.len()
                     + label.len()
@@ -153,6 +164,7 @@ impl fmt::Display for Query {
             queries.append(&mut is);
             queries.append(&mut r#in);
             queries.append(&mut author);
+            queries.append(&mut assignee);
             queries.append(&mut user);
             queries.append(&mut org);
             queries.append(&mut label);
@@ -190,13 +202,14 @@ mod tests {
             .label("hacktoberfest")
             .no("assignee")
             .r#in("[BUG]", "name")
+            .assignee("spenserblack")
             .user("spenserblack")
             .author("spenserblack")
             .language("rust")
             .to_string();
 
         assert_eq!(
-            "repo:rust-lang/rust+is:merged+[BUG] in:name+author:spenserblack+user:spenserblack+label:hacktoberfest+type:pr+no:assignee+language:rust",
+            "repo:rust-lang/rust+is:merged+[BUG] in:name+author:spenserblack+assignee:spenserblack+user:spenserblack+label:hacktoberfest+type:pr+no:assignee+language:rust",
             query
         );
     }
