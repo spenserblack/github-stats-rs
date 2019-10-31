@@ -6,6 +6,7 @@ use crate::Repo;
 pub struct Query {
     author: Vec<String>,
     repo: Vec<String>,
+    repos: Vec<String>,
     is: Vec<String>,
     r#in: Vec<In>,
     assignee: Vec<String>,
@@ -47,6 +48,17 @@ impl Query {
     /// Results in `repo:user/repo`.
     pub fn repo(mut self, user: &str, repo: &str) -> Self {
         self.repo.push(format!("{}/{}", user, repo));
+        self
+    }
+
+    /// Search for User by count of repositories.
+    ///
+    /// Results in `repos:n`.
+    /// `n` does not have to be a standard int. `>5` and `10..15` are also valid
+    /// values.
+    pub fn repos(mut self, n: &str) -> Self {
+        // NOTE Good luck not getting repo and repos mixed up
+        self.repos.push(n.to_owned());
         self
     }
 
@@ -138,6 +150,7 @@ impl fmt::Display for Query {
         let queries = {
             let mut author: Vec<_> = self.author.iter().map(|s| format!("author:{}", s)).collect();
             let mut repo: Vec<String> = self.repo.iter().map(|s| format!("repo:{}", s)).collect();
+            let mut repos: Vec<String> = self.repos.iter().map(|s| format!("repos:{}", s)).collect();
             let mut is: Vec<String> = self.is.iter().map(|s| format!("is:{}", s)).collect();
             let mut r#in: Vec<String> = self.r#in.iter().map(|s| s.to_string()).collect();
             let mut user: Vec<String> = self.user.iter().map(|s| format!("user:{}", s)).collect();
@@ -158,6 +171,7 @@ impl fmt::Display for Query {
                 Vec::with_capacity(
                 author.len()
                     + repo.len()
+                    + repos.len()
                     + is.len()
                     + r#in.len()
                     + assignee.len()
@@ -172,6 +186,7 @@ impl fmt::Display for Query {
                 );
 
             queries.append(&mut repo);
+            queries.append(&mut repos);
             queries.append(&mut is);
             queries.append(&mut r#in);
             queries.append(&mut author);
@@ -260,6 +275,15 @@ mod tests {
         );
 
         assert_eq!("Users in:title", r#in.to_string());
+    }
+
+    #[test]
+    fn repos_query() {
+        let query = Query::new()
+            .repos("<0")
+            .to_string();
+
+        assert_eq!("repos:<0", query);
     }
 
     #[test]
