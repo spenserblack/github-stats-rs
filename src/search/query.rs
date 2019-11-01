@@ -122,7 +122,7 @@ impl Query {
     ///
     /// Results in `type:statement`.
     ///
-    /// *Use `r#type` to escape `type` keyword.
+    /// *Use `r#type` to escape `type` keyword.*
     pub fn r#type(mut self, statement: &str) -> Self {
         self.r#type.push(String::from(statement));
         self
