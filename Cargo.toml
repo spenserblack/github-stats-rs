@@ -1,10 +1,10 @@
 [package]
 name = "github-stats"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Spenser Black <spenserblack01@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
-description = "Gets stats from Github"
+description = "Use Github's API"
 readme = "README.md"
 keywords = ["github"]
 repository = "https://github.com/spenserblack/github-stats-rs"
