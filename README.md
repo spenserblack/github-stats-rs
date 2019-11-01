@@ -6,7 +6,7 @@
 [![Travis CI](https://api.travis-ci.com/spenserblack/github-stats-rs.svg?branch=master)](https://travis-ci.com/spenserblack/github-stats-rs)
 [![GitHub Release Date](https://img.shields.io/github/release-date/spenserblack/github-stats-rs)](https://github.com/spenserblack/github-stats-rs/releases/latest)
 
-A tool to get stats from Github
+A tool for using [Github]'s API
 
 ## Get Stats of Repository
 
@@ -38,3 +38,5 @@ match search {
     Err(e) => eprintln!(":("),
 }
 ```
+
+[Github]: https://github.com
