@@ -1,5 +1,4 @@
 use std::fmt;
-use std::error::Error;
 
 use serde::Deserialize;
 use serde_json::Value;
@@ -62,17 +61,6 @@ pub struct SearchResults {
     total_count: u64,
     items: Vec<Value>,
 }
-
-#[derive(Debug)]
-pub struct SearchError(String);
-
-impl fmt::Display for SearchError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f,"{}",self.0)
-    }
-}
-
-impl Error for SearchError {}
 
 impl Search {
     fn new(search_area: SearchArea, query: &Query) -> Self {
