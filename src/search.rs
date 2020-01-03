@@ -15,6 +15,7 @@ mod query;
 /// ## Get merged PRs
 ///
 /// ```
+/// # async fn run() {
 /// use github_stats::{Query, Search};
 ///
 /// let query = Query::new()
@@ -25,12 +26,14 @@ mod query;
 /// let results = Search::issues(&query)
 ///     .per_page(10)
 ///     .page(1)
-///     .search();
+///     .search()
+///     .await;
 ///
 /// match results {
 ///     Ok(results) => { /* do stuff */ }
 ///     Err(e) => eprintln!(":("),
 /// }
+/// # }
 /// ```
 ///
 /// [Github]: https://github.com/
@@ -112,8 +115,8 @@ impl Search {
     }
 
     /// Runs the search.
-    pub fn search(&self) -> Result<SearchResults> {
-        let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
+    pub async fn search(&self) -> Result<SearchResults> {
+        let results: SearchResults = reqwest::get(&self.to_string()).await?.json().await?;
         Ok(results)
     }
 }

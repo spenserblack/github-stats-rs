@@ -58,8 +58,11 @@ impl Repo {
     ///
     /// let repo = Repo::new("rust-lang", "rust");
     /// ```
-    pub fn new(user: &str, repo: &str) -> Result<Self> {
-        let repo: Repo = reqwest::get(&repo_api_url(user, repo))?.json()?;
+    pub async fn new(user: &str, repo: &str) -> Result<Self> {
+        let repo: Repo = reqwest::get(&repo_api_url(user, repo))
+            .await?
+            .json()
+            .await?;
 
         Ok(repo)
     }

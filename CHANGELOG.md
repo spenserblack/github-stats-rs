@@ -1,6 +1,8 @@
 # Changelog
 
 ## [unreleased](https://github.com/spenserblack/github-stats-rs/compare/v0.2.0...master)
+### Changed
+- `fn`s that require a request to be `async`
 
 ## [0.2.0] 2019/11/01
 ### Changed

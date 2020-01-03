@@ -5,19 +5,22 @@
 //! ## Get Stats of Repository
 //!
 //! ```
+//! # async fn run() {
 //! use github_stats::Repo;
 //!
-//! let repo = Repo::new("rust-lang", "rust");
+//! let repo = Repo::new("rust-lang", "rust").await;
 //!
 //! match repo {
 //!     Ok(repo) => {/* Do some stuff */},
 //!     Err(e) => eprintln!(":("),
 //! }
+//! # }
 //! ```
 //!
 //! ## Search Latest Merged PR and Get Total Merged PR Count
 //!
 //! ```
+//! # async fn run() {
 //! use github_stats::{Query, Search};
 //!
 //! // Gets latest merged PR
@@ -25,12 +28,14 @@
 //!     &Query::new().repo("rust-lang", "rust").is("pr").is("merged"),
 //! )
 //! .per_page(1)
-//! .search();
+//! .search()
+//! .await;
 //!
 //! match search {
 //!     Ok(results) => println!("# of merged PRs: {}", results.total_count()),
 //!     Err(e) => eprintln!(":("),
 //! }
+//! # }
 //! ```
 //!
 //! [Github]: https://github.com/
