@@ -13,7 +13,7 @@ A tool for using [Github]'s API
 ```rust
 use github_stats::Repo;
 
-let repo = Repo::new("rust-lang", "rust");
+let repo = Repo::new("rust-lang", "rust").await;
 
 match repo {
     Ok(repo) => {/* Do some stuff */},
@@ -30,8 +30,9 @@ use github_stats::{Query, Search};
 let search = Search::issues(
     &Query::new().repo("rust-lang", "rust").is("pr").is("merged"),
 )
-.per_page(1)
-.search();
+    .per_page(1)
+    .search()
+    .await;
 
 match search {
     Ok(results) => println!("# of merged PRs: {}", results.total_count()),
