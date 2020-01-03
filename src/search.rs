@@ -112,8 +112,8 @@ impl Search {
     }
 
     /// Runs the search.
-    pub fn search(&self) -> Result<SearchResults> {
-        let results: SearchResults = reqwest::get(&self.to_string())?.json()?;
+    pub async fn search(&self) -> Result<SearchResults> {
+        let results: SearchResults = reqwest::get(&self.to_string()).await?.json().await?;
         Ok(results)
     }
 }

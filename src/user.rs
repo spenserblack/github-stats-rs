@@ -39,10 +39,10 @@ impl User {
     ///
     /// let user = User::new("rust-lang");
     /// ```
-    pub fn new(user: &str) -> Result<Self> {
+    pub async fn new(user: &str) -> Result<Self> {
         const URL: &str = "https://api.github.com/users";
         let url = format!("{}/{}", URL, user);
-        let user: User = reqwest::get(&url)?.json()?;
+        let user: User = reqwest::get(&url).await?.json().await?;
 
         Ok(user)
     }
