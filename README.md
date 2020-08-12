@@ -4,7 +4,6 @@
 ![Crates.io](https://img.shields.io/crates/d/github-stats)
 
 [![Travis CI](https://api.travis-ci.com/spenserblack/github-stats-rs.svg?branch=master)](https://travis-ci.com/spenserblack/github-stats-rs)
-[![GitHub Release Date](https://img.shields.io/github/release-date/spenserblack/github-stats-rs)](https://github.com/spenserblack/github-stats-rs/releases/latest)
 
 A tool for using [Github]'s API
 
