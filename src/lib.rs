@@ -4,7 +4,7 @@
 //!
 //! ## Get Stats of Repository
 //!
-//! ```
+//! ```no_run
 //! # async fn run() {
 //! use github_stats::Repo;
 //!
@@ -19,7 +19,7 @@
 //!
 //! ## Search Latest Merged PR and Get Total Merged PR Count
 //!
-//! ```
+//! ```no_run
 //! # async fn run() {
 //! use github_stats::{Query, Search};
 //!

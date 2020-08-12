@@ -14,7 +14,7 @@ mod query;
 /// # Example
 /// ## Get merged PRs
 ///
-/// ```
+/// ```no_run
 /// # async fn run() {
 /// use github_stats::{Query, Search};
 ///

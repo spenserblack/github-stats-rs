@@ -34,7 +34,7 @@ impl User {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```no_run
     /// use github_stats::User;
     ///
     /// let user = User::new("rust-lang");

@@ -53,7 +53,7 @@ impl Repo {
     ///
     /// # Example
     ///
-    /// ```
+    /// ```no_run
     /// use github_stats::Repo;
     ///
     /// let repo = Repo::new("rust-lang", "rust");
