@@ -31,7 +31,7 @@ pub struct Repo {
     /// In *kilo*bytes.
     size: u64,
     stargazers_count: u64,
-    language: String,
+    language: Option<String>,
     forks_count: u64,
     archived: bool,
     disabled: bool,
@@ -152,7 +152,7 @@ impl Repo {
         self.stargazers_count
     }
 
-    pub fn language(&self) -> &str {
+    pub fn language(&self) -> &Option<String> {
         &self.language
     }
 
