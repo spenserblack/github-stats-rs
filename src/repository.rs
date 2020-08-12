@@ -56,10 +56,14 @@ impl Repo {
     /// ```no_run
     /// use github_stats::Repo;
     ///
-    /// let repo = Repo::new("rust-lang", "rust");
+    /// let repo = Repo::new("rust-lang", "rust", "<my user agent>");
     /// ```
-    pub async fn new(user: &str, repo: &str) -> Result<Self> {
-        let repo: Repo = reqwest::get(&repo_api_url(user, repo))
+    pub async fn new(user: &str, repo: &str, user_agent: &str) -> Result<Self> {
+        let repo: Repo = reqwest::Client::builder()
+            .user_agent(user_agent)
+            .build()?
+            .get(&repo_api_url(user, repo))
+            .send()
             .await?
             .json()
             .await?;
