@@ -8,7 +8,7 @@
 //! # async fn run() {
 //! use github_stats::Repo;
 //!
-//! let repo = Repo::new("rust-lang", "rust").await;
+//! let repo = Repo::new("rust-lang", "rust", "<my user agent>").await;
 //!
 //! match repo {
 //!     Ok(repo) => {/* Do some stuff */},
