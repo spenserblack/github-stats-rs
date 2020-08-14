@@ -15,7 +15,7 @@ async fn main() {
     let owner = matches.value_of("owner").unwrap();
     let repo = matches.value_of("repo").unwrap();
 
-    println!("Getting total merged PRs of {}/{}", owner, repo);
+    println!("Getting (almost) total merged PRs of {}/{}", owner, repo);
 
     let query = Query::new()
         .repo(owner, repo)
