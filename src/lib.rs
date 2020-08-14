@@ -28,7 +28,7 @@
 //!     &Query::new().repo("rust-lang", "rust").is("pr").is("merged"),
 //! )
 //! .per_page(1)
-//! .search()
+//! .search("<my user agent>")
 //! .await;
 //!
 //! match search {
