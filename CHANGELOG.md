@@ -3,6 +3,7 @@
 ## [unreleased](https://github.com/spenserblack/github-stats-rs/compare/v0.2.0...HEAD)
 ### Changed
 - `fn`s that make requests to `async fn`s
+- user agents to be required for requests
 
 ## [0.2.0] 2019/11/01
 ### Changed
