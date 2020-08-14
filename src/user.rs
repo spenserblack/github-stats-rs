@@ -37,12 +37,19 @@ impl User {
     /// ```no_run
     /// use github_stats::User;
     ///
-    /// let user = User::new("rust-lang");
+    /// let user = User::new("rust-lang", "<my user agent>");
     /// ```
-    pub async fn new(user: &str) -> Result<Self> {
+    pub async fn new(user: &str, user_agent: &str) -> Result<Self> {
         const URL: &str = "https://api.github.com/users";
         let url = format!("{}/{}", URL, user);
-        let user: User = reqwest::get(&url).await?.json().await?;
+        let user: User = reqwest::Client::builder()
+            .user_agent(user_agent)
+            .build()?
+            .get(&url)
+            .send()
+            .await?
+            .json()
+            .await?;
 
         Ok(user)
     }
