@@ -26,7 +26,7 @@ mod query;
 /// let results = Search::issues(&query)
 ///     .per_page(10)
 ///     .page(1)
-///     .search()
+///     .search("<my user agent>")
 ///     .await;
 ///
 /// match results {
@@ -115,8 +115,15 @@ impl Search {
     }
 
     /// Runs the search.
-    pub async fn search(&self) -> Result<SearchResults> {
-        let results: SearchResults = reqwest::get(&self.to_string()).await?.json().await?;
+    pub async fn search(&self, user_agent: &str) -> Result<SearchResults> {
+        let results: SearchResults = reqwest::Client::builder()
+            .user_agent(user_agent)
+            .build()?
+            .get(&self.to_string())
+            .send()
+            .await?
+            .json()
+            .await?;
         Ok(results)
     }
 }

@@ -25,7 +25,7 @@ async fn main() {
     let results = Search::issues(&query)
         .per_page(10)
         .page(1)
-        .search()
+        .search("github-stats-rs example")
         .await
         .unwrap();
 
