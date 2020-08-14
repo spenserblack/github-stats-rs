@@ -18,5 +18,5 @@ async fn main() {
     println!("Getting repo {}/{}", owner, repo);
     let repo = Repo::new(owner, repo, "github-stats-rs example").await.unwrap();
 
-    println!("API URL: {}", repo.html_url());
+    println!("API URL: {}", repo.url());
 }
