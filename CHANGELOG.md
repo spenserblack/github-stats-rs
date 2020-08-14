@@ -2,7 +2,7 @@
 
 ## [unreleased](https://github.com/spenserblack/github-stats-rs/compare/v0.2.0...HEAD)
 ### Changed
-- `fn`s that require a request to be `async`
+- `fn`s that make requests to `async fn`s
 
 ## [0.2.0] 2019/11/01
 ### Changed
