@@ -22,9 +22,12 @@ async fn main() {
         .is("pr")
         .is("merged");
 
-    let results = Search::issues(&query)
+    let search = Search::issues(&query)
         .per_page(10)
-        .page(1)
+        .page(1);
+
+    println!("Running search: {}", search);
+    let results = search
         .search("github-stats-rs example")
         .await
         .unwrap();
