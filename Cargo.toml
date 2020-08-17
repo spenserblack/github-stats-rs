@@ -11,7 +11,9 @@ repository = "https://github.com/spenserblack/github-stats-rs"
 exclude = [
     "CHANGELOG.md",
     ".github/*",
+    ".gitignore",
     ".editorconfig",
+    ".travis.yml",
 ]
 
 [dependencies]
