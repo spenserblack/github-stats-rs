@@ -25,9 +25,3 @@ serde_json = "1.0"
 [dev-dependencies]
 clap = "2"
 tokio = { version = "0.2", features = ["macros"] }
-
-[badges]
-travis-ci = { repository = "spenserblack/github-stats-rs" }
-is-it-maintained-issue-resolution = { repository = "spenserblack/github-stats-rs" }
-is-it-maintained-open-issues = { repository = "spenserblack/github-stats-rs" }
-maintenance = { status = "actively-developed" }
