@@ -48,6 +48,25 @@ pub struct Repo {
     open_issues_count: u64,
 }
 
+/// These will also be returned when getting `Issue`s. Not all issues are pull
+/// requests, but all pull requests are issues.
+#[derive(Debug, Deserialize)]
+pub struct PullRequest {
+    pub number: u32,
+    pub title: String,
+    /// `"open"`/`"closed"`
+    pub state: String,
+    /// `None` if not merged.
+    pub merged_at: Option<DateTime<Utc>>
+}
+
+impl PullRequest {
+    /// Is the pull request merged?
+    pub fn merged(&self) -> bool {
+        self.merged_at.is_some()
+    }
+}
+
 impl Repo {
     /// Creates a new `Repo`.
     ///
