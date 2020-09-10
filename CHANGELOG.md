@@ -1,6 +1,8 @@
 # Changelog
 
 ## [unreleased](https://github.com/spenserblack/github-stats-rs/compare/v0.3.0...HEAD)
+### Added
+- optional authorization token for a `Search`
 
 ## [0.3.0]
 ### Changed
