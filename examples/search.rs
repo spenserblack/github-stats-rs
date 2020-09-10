@@ -26,6 +26,17 @@ async fn main() {
         .per_page(10)
         .page(1);
 
+    let search = match std::env::var("GITHUB_TOKEN") {
+        Ok(token) => {
+            println!("Using authorization token for search.");
+            search.authorization(&token)
+        },
+        Err(_) => {
+            println!("No authorization token found.");
+            search
+        }
+    };
+
     println!("Running search: {}", search);
     let results = search
         .search("github-stats-rs example")

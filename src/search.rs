@@ -42,6 +42,7 @@ pub struct Search {
     query: String,
     per_page: usize,
     page: usize,
+    authorization: Option<String>,
 }
 
 enum SearchArea {
@@ -72,6 +73,7 @@ impl Search {
             query: query.to_string(),
             per_page: 10,
             page: 1,
+            authorization: None,
         }
     }
 
@@ -81,6 +83,12 @@ impl Search {
 
     pub fn users(query: &Query) -> Self {
         Search::new(SearchArea::Users, query)
+    }
+
+    /// Sets an authorization token for querying the API
+    pub fn authorization(mut self, token: &str) -> Self {
+        self.authorization = Some(String::from(token));
+        self
     }
 
     /// Gets the query that will be used for the search.
@@ -116,14 +124,19 @@ impl Search {
 
     /// Runs the search.
     pub async fn search(&self, user_agent: &str) -> Result<SearchResults> {
-        let results: SearchResults = reqwest::Client::builder()
-            .user_agent(user_agent)
-            .build()?
-            .get(&self.to_string())
-            .send()
-            .await?
-            .json()
-            .await?;
+        let request = reqwest::Client::builder()
+             .user_agent(user_agent)
+             .build()?
+             .get(&self.to_string());
+        let request = match &self.authorization {
+            Some(t) => request.header("Authorization", format!("Bearer {token}", token=t)),
+            None => request,
+        };
+        let results: SearchResults = request
+             .send()
+             .await?
+             .json()
+             .await?;
         Ok(results)
     }
 }
