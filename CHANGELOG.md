@@ -1,6 +1,7 @@
 # Changelog
 
-## [unreleased](https://github.com/spenserblack/github-stats-rs/compare/v0.4.0...HEAD)
+Please view the [releases](https://github.com/spenserblack/github-stats-rs/releases)
+section for further release notes.
 
 ## [0.4.0]
 ### Added
